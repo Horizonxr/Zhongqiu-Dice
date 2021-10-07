@@ -1,5 +1,25 @@
 <template>
 	<view class="bg">
+		<view class="top">
+			<view class="iconfont icon-quit" @click="quitGame()"></view>
+			<view class="iconfont icon-rule" @click="openRule()"></view>
+			<uni-popup ref="popup" type="center">
+				<view class="rule_text_wrapper">
+					<view class="rule_title">博饼规则</view>
+					<view class="rule_text">
+						<text>
+							状元：六个相同点数>五个相同点数>四个“四点”+两个其他点数
+							榜眼（对堂）：博出点位为顺子（1，2，3，4，5，6）
+							探花（三红）：同时出现三个“四点”
+							进士（四进）：同时出现四个相同点数（除了四个四点外）
+							举人（二举）：同时出现两个“四点”
+							秀才（一秀）：博出一个“四点”
+						</text>
+					</view>
+				</view>
+			</uni-popup>
+			<view class="iconfont icon-jiangbei"></view>
+		</view>
 		<view class="cloud">
 			<image src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-112433b9-5f86-40f2-9487-4c51511869dc/d0f27ab6-cbac-410d-873a-f6eab039973f.png" mode="aspectFit"></image>
 		</view>
@@ -105,7 +125,7 @@
 			}
 		},
 		methods: {
-				playDices(){
+			playDices(){
 				this.stopClickStar = true
 				this.$options.methods.dragStar.bind(this)()
 				var num;
@@ -234,6 +254,15 @@
 					result.award = "未中奖"
 				}
 				this.result_dices.push(result)
+			},
+			quitGame(){
+				uni.redirectTo({
+					url:'../index/index'
+				})
+			},
+			openRule(){
+				console.log("打开弹窗")
+				this.$refs.popup.open('top')
 			}
 		},
 		computed:{
@@ -255,7 +284,47 @@
 		margin: 0;
 		padding: 0;
 		position: relative;
-		background: #264a51;
+		background: $bg-color;
+		.top{
+			position: absolute;
+			width: 100%;
+			height: 70rpx;
+			z-index: 5;
+			color: $icon-color;
+			.icon-quit{
+				position: relative;
+				float: left;
+				padding: 20rpx;
+				font-size: 70rpx;
+			}
+			.icon-rule{
+				position: relative;
+				float: right;
+				font-size: 70rpx;
+				padding: 20rpx;
+			}
+			.icon-jiangbei{
+				position: relative;
+				float: right;
+				font-size: 70rpx;
+				padding: 20rpx;
+			}
+			.rule_text_wrapper{
+				padding: 40rpx;
+				.rule_title{
+					color:white;
+					font-size: 110rpx;
+					margin-bottom: 100rpx;
+					text-align: center;
+				}
+				.rule_text{
+					color: white;
+					text{
+						font-size: 40rpx;
+					}
+				}
+			}
+		}
 		.star{
 			position: absolute;
 			left: 313rpx;
@@ -314,14 +383,14 @@
 		}
 		.result_list{
 			position: absolute;
-			bottom: 20rpx;
-			left:20rpx;
+			bottom: 30rpx;
+			left:30rpx;
 			width: 45%;
 			height: 15%;
-			padding: 4rpx 4rpx;
+			padding: 10rpx 4rpx;
 			background-color: black;
 			opacity: 0.5;
-			border-radius: 10rpx;
+			border-radius: 20rpx;
 			z-index: 4;
 		}
 		.result_list_item{
