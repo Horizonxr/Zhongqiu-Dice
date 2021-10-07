@@ -3,8 +3,11 @@
 		<view class="cloud">
 			<image src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-112433b9-5f86-40f2-9487-4c51511869dc/d0f27ab6-cbac-410d-873a-f6eab039973f.png" mode="aspectFit"></image>
 		</view>
-		<view class="star" @click="playDices()" :animation="dragStarData">
-			<image src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-112433b9-5f86-40f2-9487-4c51511869dc/2f90fb45-c8a0-4d83-a4ff-d29837122563.png" mode=""></image>
+		<view class="star_area">
+			<view class="star_shade" v-show="stopClickStar"></view>
+			<view class="star" @click="playDices()" :animation="dragStarData">
+				<image src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-112433b9-5f86-40f2-9487-4c51511869dc/2f90fb45-c8a0-4d83-a4ff-d29837122563.png" mode=""></image>
+			</view>
 		</view>
 		<view class="judge_text" :animation="showResultAniData">
 			{{showResult()}}
@@ -24,6 +27,7 @@
 	export default {
 		data() {
 			return {
+				stopClickStar:false,
 				dice_grade:-1,
 				dragStarData:{},
 				showResultAniData:{},
@@ -87,6 +91,7 @@
 		},
 		methods: {
 			playDices(){
+				this.stopClickStar = true
 				this.$options.methods.dragStar.bind(this)()
 				var num;
 				let i;
@@ -94,6 +99,7 @@
 					this.$options.methods.shuffleDice.bind(this)()
 					this.dice_grade = this.$options.methods.judgeDice.bind(this)()
 					this.$options.methods.showResultAni.bind(this)()
+					this.stopClickStar = false
 				},1000)
 				for (i=0;i<6;i++){
 					this.show_dices[i].dice_url = this.dices[6].dice_url;
@@ -229,6 +235,14 @@
 				width: 128rpx;
 				height: 678rpx;
 			}
+		}
+		.star_shade{
+			position: absolute;
+			width: 128rpx;
+			height: 678rpx;
+			left: 313rpx;
+			top: -200rpx;
+			z-index: 4;
 		}
 		.dice_area{
 			position: absolute;

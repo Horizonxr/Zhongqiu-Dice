@@ -161,10 +161,14 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 var _default =
 {
   data: function data() {
     return {
+      stopClickStar: false,
       dice_grade: -1,
       dragStarData: {},
       showResultAniData: {},
@@ -228,6 +232,7 @@ var _default =
   },
   methods: {
     playDices: function playDices() {var _this = this;
+      this.stopClickStar = true;
       this.$options.methods.dragStar.bind(this)();
       var num;
       var i;
@@ -235,6 +240,7 @@ var _default =
         _this.$options.methods.shuffleDice.bind(_this)();
         _this.dice_grade = _this.$options.methods.judgeDice.bind(_this)();
         _this.$options.methods.showResultAni.bind(_this)();
+        _this.stopClickStar = false;
       }, 1000);
       for (i = 0; i < 6; i++) {
         this.show_dices[i].dice_url = this.dices[6].dice_url;

@@ -42,6 +42,14 @@
   width: 128rpx;
   height: 678rpx;
 }
+.bg .star_shade {
+  position: absolute;
+  width: 128rpx;
+  height: 678rpx;
+  left: 313rpx;
+  top: -200rpx;
+  z-index: 4;
+}
 .bg .dice_area {
   position: absolute;
   display: flex;
