@@ -10,7 +10,7 @@
 			</view>
 		</view>
 		<view class="judge_text" :animation="showResultAniData">
-			{{showResult()}}
+			{{result_dices[result_dices.length-1].award}}
 		</view>
 		<view class="dice_area">
 			<view class="dice-wrap" v-for="item in show_dices" :key="item.key">
@@ -18,6 +18,19 @@
 			</view>
 		</view>
 		<view class="bottom">
+			<scroll-view class="result_list" scroll-y="true" >
+				<view class="result_list_item" v-for="(item,key) in result_dice_reverse" :key="item.key">
+					<view class="result_item_index">
+						{{result_dice_reverse.length-key}}
+					</view> 
+					<view class="result_item_text">
+						{{item.award}}
+					</view>
+					<view class="result_item_image" v-for="dice in item.num" :key="dice.key">
+						<image :src="dices[dice-1].dice_url"></image>
+					</view>
+				</view>
+			</scroll-view>
 			<image class="moon_rabbit" src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-112433b9-5f86-40f2-9487-4c51511869dc/12873b5c-74cb-418b-8de1-3f00b660d71e.png" mode="widthFix"></image>
 		</view>
 	</view>
@@ -31,6 +44,8 @@
 				dice_grade:-1,
 				dragStarData:{},
 				showResultAniData:{},
+				result_dices:[],
+				result_dice_counter:[],
 				dices:[
 					{
 						dice_num:1,
@@ -100,7 +115,7 @@
 				}
 				setTimeout(()=>{
 					this.$options.methods.shuffleDice.bind(this)()
-					this.dice_grade = this.$options.methods.judgeDice.bind(this)()
+					this.$options.methods.judgeDice.bind(this)()
 					this.$options.methods.showResultAni.bind(this)()
 				},1000)
 				setTimeout(()=>{
@@ -177,36 +192,55 @@
 					}
 				}
 				//结果输出
+				console.log(grade)
+				let flag = 1;
 				for(i=5;i>=0;i--){
 					if (grade[i]===1){
-						return i+1
+						this.dice_grade = i+1
+						flag = 0;
 					}
 				}
-				return -1
+				if (flag) this.dice_grade = -1
+				this.$options.methods.showResult.bind(this)()
 			},
 			showResult(){
-				var l = this.dice_grade
+				let l = this.dice_grade
+				let result = {
+					award:"",
+					num:[]
+				}
+				for(let i = 0;i<6;i++){
+					result.num.push(this.show_dices[i].dice_num)
+				}
 				if (l === 6){
-					return "状元"
+					result.award = "状元"
 				}
 				else if (l === 5){
-					return "榜眼"
+					result.award = "榜眼"
 				}
 				else if (l === 4){
-					return "探花"
+					result.award = "探花"
 				}
 				else if (l === 3){
-					return "进士"
+					result.award = "进士"
 				}
 				else if (l === 2){
-					return "举人"
+					result.award = "举人"
 				}
 				else if (l === 1){
-					return "秀才"
+					result.award = "秀才"
 				}
 				else {
-					return "未中奖"
+					result.award = "未中奖"
 				}
+				this.result_dices.push(result)
+			}
+		},
+		computed:{
+			result_dice_reverse(){
+				let [...arr] = this.result_dices
+				return arr.reverse()
+				
 			}
 		},
 		onLoad() {
@@ -277,6 +311,38 @@
 			position: absolute;
 			left: 52rpx;
 			top: -67rpx;
+		}
+		.result_list{
+			position: absolute;
+			bottom: 20rpx;
+			left:20rpx;
+			width: 45%;
+			height: 15%;
+			padding: 4rpx 4rpx;
+			background-color: black;
+			opacity: 0.5;
+			border-radius: 10rpx;
+			z-index: 4;
+		}
+		.result_list_item{
+			color:white;
+			display: flex;
+			height: 40rpx;
+			text-align: center;
+			font-size: 25rpx;
+			.result_item_index{
+				width: 30rpx;
+			}
+			.result_item_text{
+				width: 100rpx;
+			}
+			.result_item_image{
+				image{
+					padding-left: 4rpx;
+					width: 30rpx;
+					height: 30rpx;
+				}
+			}
 		}
 		.moon_rabbit{
 			position: absolute;
