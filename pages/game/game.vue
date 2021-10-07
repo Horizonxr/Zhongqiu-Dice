@@ -90,20 +90,22 @@
 			}
 		},
 		methods: {
-			playDices(){
+				playDices(){
 				this.stopClickStar = true
 				this.$options.methods.dragStar.bind(this)()
 				var num;
 				let i;
+				for (i=0;i<6;i++){
+					this.show_dices[i].dice_url = this.dices[6].dice_url;
+				}
 				setTimeout(()=>{
 					this.$options.methods.shuffleDice.bind(this)()
 					this.dice_grade = this.$options.methods.judgeDice.bind(this)()
 					this.$options.methods.showResultAni.bind(this)()
-					this.stopClickStar = false
 				},1000)
-				for (i=0;i<6;i++){
-					this.show_dices[i].dice_url = this.dices[6].dice_url;
-				}
+				setTimeout(()=>{
+					this.stopClickStar = false
+				},2000)
 			},
 			shuffleDice(){
 				var num;
@@ -115,7 +117,7 @@
 				}
 			},
 			dragStar(){
-				this.animation = uni.createAnimation({duration: 1000});
+				this.animation = uni.createAnimation({duration: 700});
 				this.animation.translateY(80).step({duration:200})
 				this.dragStarData = this.animation.export();
 				//回到初始位置
@@ -123,7 +125,6 @@
 					this.animation.translateY(0).step({duration:350})
 					this.dragStarData = this.animation.export();
 				},400)
-				console.log("已经调用了动画")
 			},
 			showResultAni(){
 				this.animation = uni.createAnimation({
@@ -132,11 +133,9 @@
 				this.animation.opacity(1).step({duration:300})
 				this.showResultAniData = this.animation.export();
 				setTimeout(()=>{
-					console.log("准备回到初始")
 					this.animation.opacity(0).step({duration:350})
 					this.showResultAniData = this.animation.export();
 				},1000)
-				console.log("调用了文字动画")
 			},
 			judgeDice(){
 				let grade = [0,0,0,0,0,0]
@@ -177,9 +176,6 @@
 						break;
 					}
 				}
-				console.log(result)
-				console.log("grade"+grade)
-				console.log("完成判定")
 				//结果输出
 				for(i=5;i>=0;i--){
 					if (grade[i]===1){
