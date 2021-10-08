@@ -22,6 +22,12 @@
 				已达到人数上限！
 			</uni-popup>
 		</view>
+		<view class="round">
+			<view>游戏轮数:</view>
+			<view>
+				<input class="round_input" v-model="round" placeholder="请输入游戏轮数" placeholder-class="round_placeholder"/>
+			</view>
+		</view>
 		<view class="bottom">
 			<view @click="toIndex()">返回</view>
 			<view @click="toGame()">确认</view>
@@ -33,11 +39,13 @@
 	export default {
 		data() {
 			return {
+				round:1,
 				player_num_now:1,
 				playerInfo:[
 					{
 						id:0,
-						name:""
+						name:"",
+						player_award_history:[0,0,0,0,0,0,0]
 					}
 				]
 			}
@@ -61,6 +69,13 @@
 				        console.log('success');
 				    }
 				});
+				uni.setStorage({
+				    key: 'round',
+				    data: this.round,
+				    success: function () {
+				        console.log('success');
+				    }
+				});
 				uni.redirectTo({
 					url:"../game/game"
 				})
@@ -72,7 +87,8 @@
 				}
 				this.playerInfo.push({
 					id:this.player_num_now,
-					name:""
+					name:"",
+					player_award_history:[0,0,0,0,0,0,0]
 				})
 				this.player_num_now++
 			},
@@ -172,13 +188,42 @@
 				font-size: 80rpx;
 			}
 		}
+		.round{
+			position: absolute;
+			left:50%;
+			transform: translateX(-50%);
+			width: 100%;
+			bottom: 160rpx;
+			display: flex;
+			text-align: center;
+			view:nth-child(1){
+				width: 50%;
+				font-size: 70rpx;
+				font-weight: 700;
+				color: $icon-color;
+				z-index: 2;
+			}
+			view:nth-child(2){
+				width: 50%;
+				font-size: 70rpx;
+				font-weight: 700;
+				color: $icon-color;
+				z-index: 2;
+				input{
+					height: 90rpx;
+				}
+				.round_placeholder{
+					font-size: 50rpx;
+				}
+			}
+		}
 		.bottom{
 			display: flex;
 			justify-content: center;
 			align-items: center;
 			position: absolute;
-			bottom: 0;
-			height: 300rpx;
+			bottom: 30rpx;
+			height: 100rpx;
 			width: 100%;
 			z-index: 1;
 			view{

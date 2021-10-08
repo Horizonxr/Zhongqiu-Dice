@@ -1,8 +1,18 @@
 <template>
 	<view class="bg">
+		<uni-popup class="EndPopup_wrapper" ref="EndPopup" type="top">
+			<view class="EndPopup_table">
+				<view>游戏结束</view>
+				<view @click="final_result()">查看榜单</view>
+				<view @click="restartGame()">重新开始</view>
+				<view @click="quitGame()">结束游戏</view>
+			</view>
+		</uni-popup>
 		<view class="top">
 			<view class="iconfont icon-quit" @click="quitGame()"></view>
-			<view class="room_info">round:</view>
+			<view class="room_info_wrapper">
+				<view class="room_info">轮数:{{round_now}}/{{round}}</view>
+			</view>
 			<view class="iconfont icon-rule" @click="openRule()"></view>
 			<uni-popup ref="RulePopup" type="center">
 				<view class="rule_text_wrapper">
@@ -21,13 +31,26 @@
 				</view>
 			</uni-popup>
 			<view class="iconfont icon-jiangbei" @click="openResultHistory()"></view>
-			<uni-popup ref="HistoryPopup" type="center">
+			<uni-popup ref="HistoryPopup" type="center" @change="closeHistoryJudge()">
 				<view class="result_history_wrapper">
 					<view class="iconfont icon-fanhui" @click="$refs.HistoryPopup.close()"></view>
-					<view class="history_title">战绩</view>
-					<view class="history_text" v-for="item in award_history" :key="item.key">
-						<text>{{item.award}}:</text>
-						<text>{{item.counter}}</text>
+					<view class="history_title">
+						<view>玩家</view>
+						<view>状元</view>
+						<view>榜眼</view>
+						<view>探花</view>
+						<view>进士</view>
+						<view>举人</view>
+						<view>秀才</view>
+					</view>
+					<view class="history_title" v-for="item in players" :key="item.key">
+						<view>{{item.name}}</view>
+						<view>{{item.player_award_history[1]}}</view>
+						<view>{{item.player_award_history[2]}}</view>
+						<view>{{item.player_award_history[3]}}</view>
+						<view>{{item.player_award_history[4]}}</view>
+						<view>{{item.player_award_history[5]}}</view>
+						<view>{{item.player_award_history[6]}}</view>
 					</view>
 				</view>
 			</uni-popup>
@@ -87,6 +110,8 @@
 	export default {
 		data() {
 			return {
+				round_now:0,
+				round:0,
 				player_num_now:0,
 				player_num:0,
 				players:[],
@@ -204,7 +229,6 @@
 					num = Math.floor(Math.random()*6);
 					this.show_dices[i].dice_num = this.dices[num].dice_num;
 					this.show_dices[i].dice_url = this.dices[num].dice_url;
-					// console.log(this.show_dices[i])
 				}
 			},
 			dragStar(){
@@ -234,10 +258,7 @@
 				let result = [0,0,0,0,0,0,0]
 				for (i=0;i<6;i++){
 					result[this.show_dices[i].dice_num]++;
-					console.log(this.show_dices[i].dice_num)
 				}
-				console.log(result)
-				
 				// 状元判断
 				for(i=1;i<=6;i++){
 					if(result[i]===6||result[i]===5||(result[i]===4&&i==4)){
@@ -268,7 +289,6 @@
 					}
 				}
 				//结果输出
-				console.log(grade)
 				let flag = 1;
 				for(i=5;i>=0;i--){
 					if (grade[i]===1){
@@ -313,14 +333,28 @@
 					result.award = "未中奖"
 				}
 				this.result_dices.push(result)
+				this.players[this.player_num_now].player_award_history[l]++
 				this.player_num_now++
+				if (this.player_num_now >= this.player_num) this.round_now++
 				this.player_num_now = this.player_num_now % this.player_num
+				if (this.round <= this.round_now){
+					this.$options.methods.EndGamePopup.bind(this)()
+				}
 			},
 			quitGame(){
 				uni.removeStorage({
 				    key: 'player_info',
 				    success: function (res) {
-				        console.log('success');
+				    }
+				});
+				uni.removeStorage({
+				    key: 'player_num',
+				    success: function (res) {
+				    }
+				});
+				uni.removeStorage({
+				    key: 'round',
+				    success: function (res) {
 				    }
 				});
 				uni.redirectTo({
@@ -332,6 +366,24 @@
 			},
 			openResultHistory(){
 				this.$refs.HistoryPopup.open('top')
+			},
+			EndGamePopup(){
+				this.$refs.EndPopup.open('top')
+			},
+			final_result(){
+				this.$refs.EndPopup.close()
+				this.$refs.HistoryPopup.open('top')
+			},
+			closeHistoryJudge(){
+				if (this.round<=this.round_now){
+					this.$refs.EndPopup.open('top')
+				}
+			},
+			restartGame(){
+				this.round_now = 0
+				this.player_num_now = 0
+				this.result_dices = []
+				this.$refs.EndPopup.close()
 			}
 		},
 		computed:{
@@ -352,11 +404,15 @@
 			uni.getStorage({
 				key: 'player_num',
 				success: function (res) {
-				    console.log(res.data);
 					that.player_num = res.data
 				}
 			})
-			console.log(that.players)
+			uni.getStorage({
+				key: 'round',
+				success: function (res) {
+					that.round = res.data
+				}
+			})
 		}
 	}
 </script>
@@ -369,6 +425,33 @@
 		padding: 0;
 		position: relative;
 		background: $bg-color;
+		.EndPopup_wrapper{
+			.EndPopup_table{
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				width: 100%;
+				height: 100vh;
+				text-align: center;
+				font-size: 70rpx;
+				color:white;
+				view:nth-child(1){
+					display: flex;
+					justify-content: center;
+					align-items: center;
+					height: 40%;
+					font-size: 100rpx;
+					font-weight: 700;
+				}
+				view:nth-child(n+1){
+					display: flex;
+					justify-content: center;
+					align-items: center;
+					
+					height: 15%;
+				}
+			}
+		}
 		.top{
 			position: absolute;
 			width: 100%;
@@ -381,18 +464,27 @@
 				padding: 20rpx;
 				font-size: 70rpx;
 			}
-			.room_info{
+			.room_info_wrapper{
 				position: absolute;
-				top:10rpx;
 				left:50%;
 				transform: translateX(-50%);
 				width: 200rpx;
-				height: 70rpx;
-				text-align: center;
-				font-size: 40rpx;
-				border:6rpx solid $icon-color;
-				border-radius: 20rpx;
+				height: 80rpx;
 				background-color: $bg-color;
+				.room_info{
+					position: absolute;
+					top:16rpx;
+					left:50%;
+					padding-top: 7rpx;
+					transform: translateX(-50%);
+					width: 270rpx;
+					height: 60rpx;
+					text-align: center;
+					font-size: 40rpx;
+					border:6rpx solid $icon-color;
+					border-radius: 20rpx;
+					background-color: $bg-color;
+				}
 			}
 			.icon-rule{
 				position: relative;
@@ -428,16 +520,24 @@
 			}
 			.result_history_wrapper{
 				padding: 40rpx;
-				view:nth-child(1){
+				.icon-fanhui{
 					color:white;
 					font-size: 70rpx;
 				}
 				.history_title{
+					display: flex;
+					justify-content: center;
+					width: 100%;
 					margin-top: 100rpx;
 					color:white;
-					font-size: 110rpx;
+					font-size: 40rpx;
+					font-weight: 700;
 					margin-bottom: 100rpx;
 					text-align: center;
+					view{
+						text-align: center;
+						width: 15%;
+					}
 				}
 				.history_text{
 					text-align: center;

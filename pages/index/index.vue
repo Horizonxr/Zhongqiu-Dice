@@ -13,7 +13,15 @@
 	export default {
 		data() {
 			return {
-				
+				round:10,
+				player_num:1,
+				playerInfo:[
+					{
+						id:0,
+						name:"玩家",
+						player_award_history:[0,0,0,0,0,0,0]
+					}
+				]
 			}
 		},
 		onLoad() {
@@ -21,6 +29,27 @@
 		},
 		methods: {
 			to_single_player(){
+				uni.setStorage({
+				    key: 'player_info',
+				    data: this.playerInfo,
+				    success: function () {
+				        console.log('success');
+				    }
+				});
+				uni.setStorage({
+				    key: 'player_num',
+				    data: this.player_num,
+				    success: function () {
+				        console.log('success');
+				    }
+				});
+				uni.setStorage({
+				    key: 'round',
+				    data: this.round,
+				    success: function () {
+				        console.log('success');
+				    }
+				});
 				uni.navigateTo({
 					url:"../game/game"
 				})

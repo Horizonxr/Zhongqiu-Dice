@@ -1,6 +1,15 @@
 {
 	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
 		{
+			"path": "pages/index/index",
+			"style": {
+				"navigationBarTitleText": "中秋博饼",
+				"enablePullDownRefresh": false,
+				"navigationBarBackgroundColor": "#264A51",
+				"navigationBarTextStyle": "white"
+			}
+		},
+		{
 		    "path" : "pages/creatRoom/creatRoom",
 		    "style" :                                                                                    
 		    {
@@ -12,19 +21,10 @@
 		    
 		},
 		{
-			"path": "pages/index/index",
-			"style": {
-				"navigationBarTitleText": "中秋博饼",
-				"enablePullDownRefresh": false,
-				"navigationBarBackgroundColor": "#264A51",
-				"navigationBarTextStyle": "white"
-			}
-		},
-		{
 		    "path" : "pages/game/game",
 		    "style" :                                                                                    
 		    {
-		        "navigationBarTitleText": "单人游戏",
+		        "navigationBarTitleText": "博饼游戏",
 		        "enablePullDownRefresh": false,
 				"navigationBarBackgroundColor": "#264A51",
 				"navigationBarTextStyle": "white"
