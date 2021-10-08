@@ -1,15 +1,15 @@
 {
 	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
-		
 		{
-		    "path" : "pages/game/game",
+		    "path" : "pages/creatRoom/creatRoom",
 		    "style" :                                                                                    
 		    {
-		        "navigationBarTitleText": "单人游戏",
+		        "navigationBarTitleText": "创建房间",
 		        "enablePullDownRefresh": false,
-				"navigationBarBackgroundColor": "#264A51",
-				"navigationBarTextStyle": "white"
+				"navigationBarBackgroundColor":"#ebbd5d",
+				"navigationBarTextStyle":"white"
 		    }
+		    
 		},
 		{
 			"path": "pages/index/index",
@@ -19,6 +19,16 @@
 				"navigationBarBackgroundColor": "#264A51",
 				"navigationBarTextStyle": "white"
 			}
+		},
+		{
+		    "path" : "pages/game/game",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "单人游戏",
+		        "enablePullDownRefresh": false,
+				"navigationBarBackgroundColor": "#264A51",
+				"navigationBarTextStyle": "white"
+		    }
 		}
     ],
 	"globalStyle": {

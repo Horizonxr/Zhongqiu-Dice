@@ -2,6 +2,7 @@
 	<view class="bg">
 		<view class="top">
 			<view class="iconfont icon-quit" @click="quitGame()"></view>
+			<view class="room_info">round:</view>
 			<view class="iconfont icon-rule" @click="openRule()"></view>
 			<uni-popup ref="RulePopup" type="center">
 				<view class="rule_text_wrapper">
@@ -31,8 +32,20 @@
 				</view>
 			</uni-popup>
 		</view>
-		<view class="cloud">
-			<image src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-112433b9-5f86-40f2-9487-4c51511869dc/d0f27ab6-cbac-410d-873a-f6eab039973f.png" mode="aspectFit"></image>
+		<view class="player_area">
+			<view class="cloud">
+				<image src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-112433b9-5f86-40f2-9487-4c51511869dc/d0f27ab6-cbac-410d-873a-f6eab039973f.png" mode="aspectFit"></image>
+			</view>
+			<view class="player_head">
+				<image src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-112433b9-5f86-40f2-9487-4c51511869dc/7ff8f646-346d-4825-843a-23e5b4930396.png" mode=""></image>
+				<image src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-112433b9-5f86-40f2-9487-4c51511869dc/7ff8f646-346d-4825-843a-23e5b4930396.png" mode=""></image>
+				<image src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-112433b9-5f86-40f2-9487-4c51511869dc/7ff8f646-346d-4825-843a-23e5b4930396.png" mode=""></image>
+				<image src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-112433b9-5f86-40f2-9487-4c51511869dc/7ff8f646-346d-4825-843a-23e5b4930396.png" mode=""></image>
+				<image src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-112433b9-5f86-40f2-9487-4c51511869dc/7ff8f646-346d-4825-843a-23e5b4930396.png" mode=""></image>
+				<image src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-112433b9-5f86-40f2-9487-4c51511869dc/7ff8f646-346d-4825-843a-23e5b4930396.png" mode=""></image>
+				<image src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-112433b9-5f86-40f2-9487-4c51511869dc/7ff8f646-346d-4825-843a-23e5b4930396.png" mode=""></image>
+				<image src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-112433b9-5f86-40f2-9487-4c51511869dc/7ff8f646-346d-4825-843a-23e5b4930396.png" mode=""></image>
+			</view>
 		</view>
 		<view class="star_area">
 			<view class="star_shade" v-show="stopClickStar"></view>
@@ -54,6 +67,9 @@
 					<view class="result_item_index">
 						{{result_dice_reverse.length-key}}
 					</view> 
+					<view class="result_player">
+						{{item.player}}
+					</view>
 					<view class="result_item_text">
 						{{item.award}}
 					</view>
@@ -71,6 +87,9 @@
 	export default {
 		data() {
 			return {
+				player_num_now:0,
+				player_num:0,
+				players:[],
 				stopClickStar:false,
 				dice_grade:-1,
 				dragStarData:{},
@@ -264,9 +283,11 @@
 			showResult(){
 				let l = this.dice_grade
 				let result = {
+					player:"",
 					award:"",
 					num:[]
 				}
+				result.player = this.players[this.player_num_now].name
 				for(let i = 0;i<6;i++){
 					result.num.push(this.show_dices[i].dice_num)
 				}
@@ -292,8 +313,16 @@
 					result.award = "未中奖"
 				}
 				this.result_dices.push(result)
+				this.player_num_now++
+				this.player_num_now = this.player_num_now % this.player_num
 			},
 			quitGame(){
+				uni.removeStorage({
+				    key: 'player_info',
+				    success: function (res) {
+				        console.log('success');
+				    }
+				});
 				uni.redirectTo({
 					url:'../index/index'
 				})
@@ -312,7 +341,22 @@
 				
 			}
 		},
-		onLoad() {
+		onShow() {
+			var that = this
+			uni.getStorage({
+			    key: 'player_info',
+			    success: function (res) {
+					that.players = res.data
+			    }
+			})
+			uni.getStorage({
+				key: 'player_num',
+				success: function (res) {
+				    console.log(res.data);
+					that.player_num = res.data
+				}
+			})
+			console.log(that.players)
 		}
 	}
 </script>
@@ -336,6 +380,19 @@
 				float: left;
 				padding: 20rpx;
 				font-size: 70rpx;
+			}
+			.room_info{
+				position: absolute;
+				top:10rpx;
+				left:50%;
+				transform: translateX(-50%);
+				width: 200rpx;
+				height: 70rpx;
+				text-align: center;
+				font-size: 40rpx;
+				border:6rpx solid $icon-color;
+				border-radius: 20rpx;
+				background-color: $bg-color;
 			}
 			.icon-rule{
 				position: relative;
@@ -443,16 +500,82 @@
 			opacity: 0;
 			z-index: 2;
 		}
-		.cloud{
+		.player_area{
 			position: absolute;
 			left: 52rpx;
-			top: -40rpx;
+			top: 7rpx;
+			width: 640rpx;
+			height: 500rpx;
+			.cloud{
+				position: absolute;
+			}
+			.player_head{
+				position: relative;
+				width: 640rpx;
+				height: 500rpx;
+				image:nth-child(1){
+					position: absolute;
+					top:92rpx;
+					left:88rpx;
+					width: 70rpx;
+					height: 70rpx;
+				}
+				image:nth-child(2){
+					position: absolute;
+					top:92rpx;
+					left:430rpx;
+					width: 70rpx;
+					height: 70rpx;
+				}
+				image:nth-child(3){
+					position: absolute;
+					top:147rpx;
+					left:213rpx;
+					width: 70rpx;
+					height: 70rpx;
+				}
+				image:nth-child(4){
+					position: absolute;
+					top:147rpx;
+					left:558rpx;
+					width: 70rpx;
+					height: 70rpx;
+				}
+				image:nth-child(5){
+					position: absolute;
+					top:200rpx;
+					left:30rpx;
+					width: 70rpx;
+					height: 70rpx;
+				}
+				image:nth-child(6){
+					position: absolute;
+					top:200rpx;
+					left:372rpx;
+					width: 70rpx;
+					height: 70rpx;
+				}
+				image:nth-child(7){
+					position: absolute;
+					top:275rpx;
+					left:159rpx;
+					width: 70rpx;
+					height: 70rpx;
+				}
+				image:nth-child(8){
+					position: absolute;
+					top:275rpx;
+					left:501rpx;
+					width: 70rpx;
+					height: 70rpx;
+				}
+			}
 		}
 		.result_list{
 			position: absolute;
 			bottom: 30rpx;
-			left:30rpx;
-			width: 45%;
+			left:10rpx;
+			width: 60%;
 			height: 18%;
 			padding: 10rpx 4rpx;
 			background-color: black;
@@ -464,10 +587,14 @@
 			color:white;
 			display: flex;
 			height: 40rpx;
+			justify-content: center;
 			text-align: center;
 			font-size: 25rpx;
 			.result_item_index{
-				width: 30rpx;
+				width: 20rpx;
+			}
+			.result_player{
+				width: 120rpx;
 			}
 			.result_item_text{
 				width: 100rpx;

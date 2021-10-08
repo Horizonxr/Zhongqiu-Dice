@@ -2,7 +2,10 @@
 	<view class="start_bg">
 		<image class="bg_image" src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-112433b9-5f86-40f2-9487-4c51511869dc/94aeee79-e979-4c31-aa58-374598f4e3cb.jpg"></image>
 		<image class="start_title" src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-112433b9-5f86-40f2-9487-4c51511869dc/cc10bd7d-650e-44a5-ae8c-e50057441b14.png"></image>
-		<image class="single_player" @click="to_single_player()" src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-112433b9-5f86-40f2-9487-4c51511869dc/733de78c-14ee-4c8b-a971-3fc7d87cc0e6.png"></image>
+		<view class="options">
+			<image class="single_player" @click="to_single_player()" src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-112433b9-5f86-40f2-9487-4c51511869dc/733de78c-14ee-4c8b-a971-3fc7d87cc0e6.png"></image>
+			<image class="create_room" @click="to_create_room()" src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-112433b9-5f86-40f2-9487-4c51511869dc/4a58853b-1ff6-491a-a496-7bc293cefd1d.png" mode=""></image>
+		</view>
 	</view>
 </template>
 
@@ -21,6 +24,11 @@
 				uni.navigateTo({
 					url:"../game/game"
 				})
+			},
+			to_create_room(){
+				uni.navigateTo({
+					url:"../creatRoom/creatRoom"
+				})
 			}
 		}
 	}
@@ -29,7 +37,7 @@
 <style lang="scss">
 	.start_bg{
 		width: 100%;
-		height: 1600rpx;
+		height: 100vh;
 		margin: 0;
 		padding: 0;
 		position: relative;
@@ -46,13 +54,25 @@
 			top: -23rpx;
 			left: 56rpx;
 		}
-		.single_player{
-			position: relative;
-			width: 300rpx;
-			height: 76rpx;
-			top:900rpx;
-			left: 224rpx;
+		.options{
+			position: absolute;
+			bottom: 0;
+			width: 100%;
+			height: 30vh;
+			.single_player{
+				position: absolute;
+				width: 300rpx;
+				height: 76rpx;
+				top:0rpx;
+				left: 224rpx;
+			}
+			.create_room{
+				position: relative;
+				width: 346rpx;
+				height: 110rpx;
+				top:200rpx;
+				left: 202rpx;
+			}
 		}
-		
 	}
 </style>
