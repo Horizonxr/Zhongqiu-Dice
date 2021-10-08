@@ -3,8 +3,9 @@
 		<view class="top">
 			<view class="iconfont icon-quit" @click="quitGame()"></view>
 			<view class="iconfont icon-rule" @click="openRule()"></view>
-			<uni-popup ref="popup" type="center">
+			<uni-popup ref="RulePopup" type="center">
 				<view class="rule_text_wrapper">
+					<view class="iconfont icon-fanhui" @click="$refs.RulePopup.close()"></view>
 					<view class="rule_title">博饼规则</view>
 					<view class="rule_text">
 						<text>
@@ -18,7 +19,17 @@
 					</view>
 				</view>
 			</uni-popup>
-			<view class="iconfont icon-jiangbei"></view>
+			<view class="iconfont icon-jiangbei" @click="openResultHistory()"></view>
+			<uni-popup ref="HistoryPopup" type="center">
+				<view class="result_history_wrapper">
+					<view class="iconfont icon-fanhui" @click="$refs.HistoryPopup.close()"></view>
+					<view class="history_title">战绩</view>
+					<view class="history_text" v-for="item in award_history" :key="item.key">
+						<text>{{item.award}}:</text>
+						<text>{{item.counter}}</text>
+					</view>
+				</view>
+			</uni-popup>
 		</view>
 		<view class="cloud">
 			<image src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-112433b9-5f86-40f2-9487-4c51511869dc/d0f27ab6-cbac-410d-873a-f6eab039973f.png" mode="aspectFit"></image>
@@ -66,6 +77,32 @@
 				showResultAniData:{},
 				result_dices:[],
 				result_dice_counter:[],
+				award_history:[
+					{
+						award:"状元",
+						counter:0
+					},
+					{
+						award:"榜眼",
+						counter:0
+					},
+					{
+						award:"探花",
+						counter:0
+					},
+					{
+						award:"进士",
+						counter:0
+					},
+					{
+						award:"举人",
+						counter:0
+					},
+					{
+						award:"秀才",
+						counter:0
+					}
+				],
 				dices:[
 					{
 						dice_num:1,
@@ -216,6 +253,7 @@
 				let flag = 1;
 				for(i=5;i>=0;i--){
 					if (grade[i]===1){
+						this.award_history[5-i].counter++
 						this.dice_grade = i+1
 						flag = 0;
 					}
@@ -261,8 +299,10 @@
 				})
 			},
 			openRule(){
-				console.log("打开弹窗")
-				this.$refs.popup.open('top')
+				this.$refs.RulePopup.open('top')
+			},
+			openResultHistory(){
+				this.$refs.HistoryPopup.open('top')
 			}
 		},
 		computed:{
@@ -311,7 +351,12 @@
 			}
 			.rule_text_wrapper{
 				padding: 40rpx;
+				view:nth-child(1){
+					color:white;
+					font-size: 70rpx;
+				}
 				.rule_title{
+					margin-top: 100rpx;
 					color:white;
 					font-size: 110rpx;
 					margin-bottom: 100rpx;
@@ -320,7 +365,29 @@
 				.rule_text{
 					color: white;
 					text{
-						font-size: 40rpx;
+						font-size: 39rpx;
+					}
+				}
+			}
+			.result_history_wrapper{
+				padding: 40rpx;
+				view:nth-child(1){
+					color:white;
+					font-size: 70rpx;
+				}
+				.history_title{
+					margin-top: 100rpx;
+					color:white;
+					font-size: 110rpx;
+					margin-bottom: 100rpx;
+					text-align: center;
+				}
+				.history_text{
+					text-align: center;
+					font-size: 70rpx;
+					color: white;
+					text{
+						font-size: 60rpx;
 					}
 				}
 			}
@@ -379,14 +446,14 @@
 		.cloud{
 			position: absolute;
 			left: 52rpx;
-			top: -67rpx;
+			top: -40rpx;
 		}
 		.result_list{
 			position: absolute;
 			bottom: 30rpx;
 			left:30rpx;
 			width: 45%;
-			height: 15%;
+			height: 18%;
 			padding: 10rpx 4rpx;
 			background-color: black;
 			opacity: 0.5;
