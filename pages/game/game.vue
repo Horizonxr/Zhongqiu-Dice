@@ -43,14 +43,14 @@
 						<view>举人</view>
 						<view>秀才</view>
 					</view>
-					<view class="history_title" v-for="item in players" :key="item.key">
+					<view class="history_text" v-for="item in players" :key="item.key">
 						<view>{{item.name}}</view>
-						<view>{{item.player_award_history[1]}}</view>
-						<view>{{item.player_award_history[2]}}</view>
-						<view>{{item.player_award_history[3]}}</view>
-						<view>{{item.player_award_history[4]}}</view>
-						<view>{{item.player_award_history[5]}}</view>
 						<view>{{item.player_award_history[6]}}</view>
+						<view>{{item.player_award_history[5]}}</view>
+						<view>{{item.player_award_history[4]}}</view>
+						<view>{{item.player_award_history[3]}}</view>
+						<view>{{item.player_award_history[2]}}</view>
+						<view>{{item.player_award_history[1]}}</view>
 					</view>
 				</view>
 			</uni-popup>
@@ -60,14 +60,7 @@
 				<image src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-112433b9-5f86-40f2-9487-4c51511869dc/d0f27ab6-cbac-410d-873a-f6eab039973f.png" mode="aspectFit"></image>
 			</view>
 			<view class="player_head">
-				<image src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-112433b9-5f86-40f2-9487-4c51511869dc/7ff8f646-346d-4825-843a-23e5b4930396.png" mode=""></image>
-				<image src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-112433b9-5f86-40f2-9487-4c51511869dc/7ff8f646-346d-4825-843a-23e5b4930396.png" mode=""></image>
-				<image src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-112433b9-5f86-40f2-9487-4c51511869dc/7ff8f646-346d-4825-843a-23e5b4930396.png" mode=""></image>
-				<image src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-112433b9-5f86-40f2-9487-4c51511869dc/7ff8f646-346d-4825-843a-23e5b4930396.png" mode=""></image>
-				<image src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-112433b9-5f86-40f2-9487-4c51511869dc/7ff8f646-346d-4825-843a-23e5b4930396.png" mode=""></image>
-				<image src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-112433b9-5f86-40f2-9487-4c51511869dc/7ff8f646-346d-4825-843a-23e5b4930396.png" mode=""></image>
-				<image src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-112433b9-5f86-40f2-9487-4c51511869dc/7ff8f646-346d-4825-843a-23e5b4930396.png" mode=""></image>
-				<image src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-112433b9-5f86-40f2-9487-4c51511869dc/7ff8f646-346d-4825-843a-23e5b4930396.png" mode=""></image>
+				<image v-for="(item, key) in players" :key="item.key" :src="item.avatar_url" :style="{'opacity': player_num_now===key ? 1 : 0.3}"></image>
 			</view>
 		</view>
 		<view class="star_area">
@@ -368,7 +361,9 @@
 				this.$refs.HistoryPopup.open('top')
 			},
 			EndGamePopup(){
-				this.$refs.EndPopup.open('top')
+				setTimeout(()=>{
+					this.$refs.EndPopup.open('top')
+				},2000)
 			},
 			final_result(){
 				this.$refs.EndPopup.close()
@@ -532,7 +527,7 @@
 					color:white;
 					font-size: 40rpx;
 					font-weight: 700;
-					margin-bottom: 100rpx;
+					margin-bottom: 50rpx;
 					text-align: center;
 					view{
 						text-align: center;
@@ -540,11 +535,21 @@
 					}
 				}
 				.history_text{
+					display: flex;
+					justify-content: center;
+					width: 100%;
+					margin-top: 100rpx;
+					color:white;
+					font-size: 40rpx;
+					font-weight: 700;
+					margin-bottom: 50rpx;
 					text-align: center;
-					font-size: 70rpx;
-					color: white;
-					text{
-						font-size: 60rpx;
+					view:nth-child(1){
+						font-size: 30rpx;
+					}
+					view:nth-child(n+1){
+						text-align: center;
+						width: 15%;
 					}
 				}
 			}
@@ -614,6 +619,7 @@
 				width: 640rpx;
 				height: 500rpx;
 				image:nth-child(1){
+					border-radius: 50%;
 					position: absolute;
 					top:92rpx;
 					left:88rpx;
@@ -621,6 +627,7 @@
 					height: 70rpx;
 				}
 				image:nth-child(2){
+					border-radius: 50%;
 					position: absolute;
 					top:92rpx;
 					left:430rpx;
@@ -628,6 +635,7 @@
 					height: 70rpx;
 				}
 				image:nth-child(3){
+					border-radius: 50%;
 					position: absolute;
 					top:147rpx;
 					left:213rpx;
@@ -635,6 +643,7 @@
 					height: 70rpx;
 				}
 				image:nth-child(4){
+					border-radius: 50%;
 					position: absolute;
 					top:147rpx;
 					left:558rpx;
@@ -642,6 +651,7 @@
 					height: 70rpx;
 				}
 				image:nth-child(5){
+					border-radius: 50%;
 					position: absolute;
 					top:200rpx;
 					left:30rpx;
@@ -649,6 +659,7 @@
 					height: 70rpx;
 				}
 				image:nth-child(6){
+					border-radius: 50%;
 					position: absolute;
 					top:200rpx;
 					left:372rpx;
@@ -656,6 +667,7 @@
 					height: 70rpx;
 				}
 				image:nth-child(7){
+					border-radius: 50%;
 					position: absolute;
 					top:275rpx;
 					left:159rpx;
@@ -663,6 +675,7 @@
 					height: 70rpx;
 				}
 				image:nth-child(8){
+					border-radius: 50%;
 					position: absolute;
 					top:275rpx;
 					left:501rpx;

@@ -19,6 +19,7 @@
 					{
 						id:0,
 						name:"玩家",
+						avatar_url:"",
 						player_award_history:[0,0,0,0,0,0,0]
 					}
 				]
@@ -28,30 +29,72 @@
 
 		},
 		methods: {
+			getUserProfile() {
+			    let that = this
+			    uni.getUserProfile({
+			        desc: "用于完善用户信息",
+			        success: (res1) => {
+			            that.info = res1.userInfo;
+			            console.log(res1)
+			            uni.showToast({
+			                icon:"none",
+			                title:'获取成功'
+			            })
+			        },
+			        fail: (err) => {
+			            console.log(err)
+			            uni.showToast({
+			                icon:"none",
+			                title:'用户拒绝获取'
+			            })
+			        }  
+			    })
+			},
 			to_single_player(){
-				uni.setStorage({
-				    key: 'player_info',
-				    data: this.playerInfo,
-				    success: function () {
-				        console.log('success');
-				    }
-				});
-				uni.setStorage({
-				    key: 'player_num',
-				    data: this.player_num,
-				    success: function () {
-				        console.log('success');
-				    }
-				});
-				uni.setStorage({
-				    key: 'round',
-				    data: this.round,
-				    success: function () {
-				        console.log('success');
-				    }
-				});
-				uni.navigateTo({
-					url:"../game/game"
+				// this.$options.methods.getUserProfile.bind(this)()
+				let that = this
+				uni.getUserProfile({
+				    desc: "用于完善用户信息",
+				    success: (res) => {
+				        console.log(res)
+						this.playerInfo[0].name = res.userInfo.nickName
+						this.playerInfo[0].avatar_url = res.userInfo.avatarUrl
+				        uni.showToast({
+				            icon:"none",
+				            title:'获取成功'
+				        })
+						uni.setStorage({
+						    key: 'player_info',
+						    data: this.playerInfo,
+						    success: function () {
+						        console.log('success');
+						    }
+						});
+						uni.setStorage({
+						    key: 'player_num',
+						    data: this.player_num,
+						    success: function () {
+						        console.log('success');
+						    }
+						});
+						uni.setStorage({
+						    key: 'round',
+						    data: this.round,
+						    success: function () {
+						        console.log('success');
+						    }
+						});
+						uni.navigateTo({
+							url:"../game/game"
+						})
+				    },
+				    fail: (err) => {
+				        console.log(err)
+				        uni.showToast({
+				            icon:"none",
+				            title:'用户拒绝获取'
+				        })
+				    }  
 				})
 			},
 			to_create_room(){
