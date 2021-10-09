@@ -6,3 +6,5 @@
 作业要求2：https://bbs.csdn.net/topics/601189945
 
 班级链接：https://bbs.csdn.net/forums/fzuSoftwareEngineering2021?category=0
+
+项目视频演示地址：https://www.bilibili.com/video/BV11b4y1a7UZ/
