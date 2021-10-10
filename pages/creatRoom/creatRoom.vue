@@ -6,10 +6,15 @@
 				<view class="choose_avatar_title">请选择你的头像</view>
 				<view class="choose_avatar_image">
 					<view v-for="(item, key) in avatar_list" :key="item.key"  @click="chooseAvator(key)">
-						<image :src="item.avatar_url" :style="{'opacity': item.chosen === 0 ? 0.3 : 1}"></image>
+						<image :src="item.avatar_url" :style="{'opacity': item.chosen === 0 ? 0.3 : 1 , 'border': key === playerInfo[change_avatar_id].avatar_id ? '6rpx solid white' : ''}"></image>
 					</view>
 				</view>
 			</view>
+		</uni-popup>
+		<uni-popup class="error_message" ref="error_popup" type="message">
+			<uni-popup-message type="warn" message="失败消息" :duration="2000">
+				<view>{{error_message}}</view>
+			</uni-popup-message>
 		</uni-popup>
 		<image src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-112433b9-5f86-40f2-9487-4c51511869dc/3da9c9f4-a982-4085-bd3c-3d31a9fa2358.png" mode=""></image>
 		<view class="title">
@@ -53,6 +58,8 @@
 	export default {
 		data() {
 			return {
+				error_message:"",
+				change_avatar_id:-1,
 				avatar_list:[
 					{
 						avatar_url:"https://vkceyugu.cdn.bspapp.com/VKCEYUGU-112433b9-5f86-40f2-9487-4c51511869dc/da8610d8-2c2c-4710-be53-3e9d60ba11d7.jpeg",
@@ -94,6 +101,7 @@
 						id:0,
 						name:"",
 						avatar_url:"",
+						avatar_id:-1,
 						player_award_history:[0,0,0,0,0,0,0]
 					}
 				]
@@ -104,6 +112,9 @@
 				uni.navigateBack()
 			},
 			toGame(){
+				if (!this.$options.methods.check_info.bind(this)()){
+					return
+				}
 				uni.setStorage({
 				    key: 'player_info',
 				    data: this.playerInfo,
@@ -138,25 +149,60 @@
 					id:this.player_num_now,
 					name:"",
 					avatar_url:"",
+					avatar_id:-1,
 					player_award_history:[0,0,0,0,0,0,0]
 				})
 				this.player_num_now++
 			},
 			deletePlayer(id){
+				if (this.playerInfo.length == 1){
+					this.error_message = "至少剩余一名玩家"
+					this.$refs.error_popup.open('top')
+					return
+				}
+				if (this.playerInfo[id].avatar_id!==-1){
+					this.avatar_list[this.playerInfo[id].avatar_id].chosen = 1
+				}
 				this.playerInfo.splice(id,1)
 				this.player_num_now--
 				for (let i = 0;i<this.playerInfo.length;i++){
 					this.playerInfo[i].id = i
 				}
+				console.log("释放了头像"+this.playerInfo[id].avatar_id)
+				console.log("玩家ID是"+id)
 			},
 			editPlayerAvatar(id){
 				this.change_avatar_id = id
 				this.$refs.avatar_select_popup.open('top')
+				console.log("想要改变的账号"+id)
 			},
 			chooseAvator(id){
-				this.playerInfo[this.change_avatar_id].avatar_url = this.avatar_list[id].avatar_url
-				this.avatar_list[id].chosen = 0
-				this.$refs.avatar_select_popup.close()
+				if (this.avatar_list[id].chosen !== 0){
+					if (this.playerInfo[this.change_avatar_id].avatar_id!==-1){
+						let pre_id = this.playerInfo[this.change_avatar_id].avatar_id
+						this.avatar_list[pre_id].chosen = 1
+					}
+					this.playerInfo[this.change_avatar_id].avatar_id = id
+					this.playerInfo[this.change_avatar_id].avatar_url = this.avatar_list[id].avatar_url
+					this.avatar_list[id].chosen = 0
+					this.$refs.avatar_select_popup.close()
+				}
+				else {
+					this.error_message = "头像已经被选择，请换一个吧"
+					this.$refs.error_popup.open('top')
+					console.log("头像已经被选择"+id)
+				}
+			},
+			check_info(){
+				for (let i = 0;i<this.playerInfo.length;i++){
+					let pl = this.playerInfo[i]
+					if (pl.avatar_id === -1 || pl.name === ""){
+						this.error_message = "请检查玩家名称，头像是否填写"
+						this.$refs.error_popup.open('top')
+						return 0
+					}
+				}
+				return 1
 			}
 		}
 	}
